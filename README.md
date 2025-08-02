@@ -1,10 +1,20 @@
 # tiktok_clonee
 
-A new Flutter project.
+A complete TikTok-like app built with Flutter and Firebase, featuring follower/following functionality.
+
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is also a suitable real world projects for hands on exercise .
+
+## Tech Stack
+
+- **Frontend**: Flutter
+- **Backend**: Firebase (Auth, Firestore, Cloud Storage)
+- **State Management**:   GetX
+
+
+if you want to relate it  for understanding the best method i again say's is drawing flowcharts
 
 A few resources to get you started if this is your first Flutter project:
 
