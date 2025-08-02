@@ -16,7 +16,7 @@ class AuthController extends GetxController{
   late Rx<User?> _user;
 
   // Getter to access the current user value
-  User get user => _user.value!;
+  User get user => _user.value!;  
 
   @override
   void onReady() {
@@ -30,7 +30,7 @@ class AuthController extends GetxController{
   }
 
   // Set the initial screen based on user authentication status
-  _setinitialScreen(User? user){
+  void _setinitialScreen(User? user){
     if(user==null){
       // If user is null, navigate to login screen
       Get.offAll(() => Loginscreen());

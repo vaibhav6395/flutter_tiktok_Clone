@@ -10,7 +10,7 @@ class Addvideoscreen extends StatelessWidget {
 
 
 
-pickvideo(ImageSource src,BuildContext context) async {
+Future<void> pickvideo(ImageSource src,BuildContext context) async {
 final video =await ImagePicker().pickVideo(source: src);
 if(video!=null){
   Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Confirmvideoscreen(videofile: File(video.path,), videopath: video.path,)));
@@ -20,7 +20,7 @@ if(video!=null){
 
 }
 
-  showoptionsDialogBox(BuildContext context) {
+  Future showoptionsDialogBox(BuildContext context) {
     return showDialog(
       context: context,
       builder: (context) => SimpleDialog(

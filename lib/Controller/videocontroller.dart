@@ -28,7 +28,7 @@ class Videocontroller extends GetxController {
 
 // same logic for comment 
   // Like or unlike a video by updating the likes array in Firestore
-  likevide(String id) async {
+  Future<void> likevide(String id) async {
     DocumentSnapshot snapshot=await firestore.collection('videos').doc(id).get();
     var uid=authcontroller.user.uid;
 

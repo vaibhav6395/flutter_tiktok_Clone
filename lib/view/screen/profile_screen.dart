@@ -6,7 +6,7 @@ import 'package:tiktok_clonee/constants.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String uid;
-  ProfileScreen({super.key, required this.uid});
+  const ProfileScreen({super.key, required this.uid});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();

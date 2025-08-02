@@ -20,7 +20,7 @@ class CommentController extends GetxController {
 
   // Fetch comments from Firestore for the current post ID and bind to the reactive list
   // fetch data of  videos => videoid => details of comments of that video
-  getcomment() async {
+  Future<void> getcomment() async {
     _comment.bindStream(
       firestore
           .collection('videos')
@@ -38,7 +38,7 @@ class CommentController extends GetxController {
   }
 
   // Post a new comment to Firestore under the current post ID
-  postcomment(String commentText) async {
+  Future<void> postcomment(String commentText) async {
     try {
       if (commentText.isNotEmpty) {
         // Get current user data from Firestore
@@ -86,7 +86,7 @@ class CommentController extends GetxController {
     }
   }
 
-  likecomment(String commentid)async{
+  Future<void> likecomment(String commentid)async{
     // get current user details and inside videos => videoid => comments => commentid doc checks the userid 
     var uid=authcontroller.user.uid;
     DocumentSnapshot doc=await firestore.collection('videos').doc(_videoid).collection('comments').doc(commentid).get();

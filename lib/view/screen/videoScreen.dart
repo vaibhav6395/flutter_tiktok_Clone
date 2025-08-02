@@ -10,7 +10,7 @@ class Videoscreen extends StatelessWidget {
   Videoscreen({super.key});
 
   final Videocontroller videocontroller = Get.put(Videocontroller());
-  builfprofile(String profilepic) {
+  SizedBox builfprofile(String profilepic) {
     return SizedBox(
       width: 60,
       height: 60,
@@ -40,7 +40,7 @@ class Videoscreen extends StatelessWidget {
     );
   }
 
-  buildMusicsAlbum(String profilepic) {
+  SizedBox buildMusicsAlbum(String profilepic) {
     return SizedBox(
       width: 60,
       height: 60,
