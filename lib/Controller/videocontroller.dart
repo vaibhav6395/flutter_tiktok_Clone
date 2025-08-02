@@ -4,9 +4,8 @@ import 'package:tiktok_clonee/constants.dart';
 import 'package:tiktok_clonee/models/video.dart';
 
 class Videocontroller extends GetxController {
-  // Reactive list to hold videos
+  // Reactive list to hold videos and their data
   final Rx<List<Video>> _videolist = Rx<List<Video>>([]);
-  // Getter to access the current list of videos
   List<Video> get videolist => _videolist.value;
 
   @override
@@ -23,7 +22,11 @@ class Videocontroller extends GetxController {
       }),
     );
   }
+// this is a simple form of snapshot.data() as dynamic ['']  by mapping it 
+// instead we getting the data as a list of videomodel objects which is saved in a list searched user
+// so this works as  searcheduser[i].videoid   here videoid is a field in videomodel class
 
+// same logic for comment 
   // Like or unlike a video by updating the likes array in Firestore
   likevide(String id) async {
     DocumentSnapshot snapshot=await firestore.collection('videos').doc(id).get();

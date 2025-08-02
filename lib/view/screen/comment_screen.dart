@@ -5,15 +5,17 @@ import 'package:tiktok_clonee/constants.dart';
 import 'package:timeago/timeago.dart' as tago;
 
 class CommentScreen extends StatelessWidget {
-  final String id;
-  CommentScreen({super.key, required this.id});
-  TextEditingController commenttextcontroller = TextEditingController();
+  final String videoid;
+  CommentScreen({super.key, required this.videoid});
+
   CommentController commentController = Get.put(CommentController());
+  TextEditingController commenttextcontroller = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    commentController.updatepostid(id);
+    commentController.updatevideoid(videoid);
 
     return Scaffold(
       body: SingleChildScrollView(

@@ -10,7 +10,7 @@ class Searchcontroller extends GetxController {
   List<Usermodel> get searcheduser=> _searcheduser.value;
 
   // Search users by name starting with the typed string
-  searchUser(String typpeduser)async{
+  Future<void> searchUser(String typpeduser)async{
     _searcheduser.bindStream(
       firestore.collection('users')
         .where('name',isGreaterThanOrEqualTo: typpeduser)
@@ -25,3 +25,5 @@ class Searchcontroller extends GetxController {
     );
   }
 }
+
+ // this also works approx same as in the videocontroller 

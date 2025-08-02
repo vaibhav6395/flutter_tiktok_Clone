@@ -80,7 +80,7 @@ class Videoscreen extends StatelessWidget {
 
             return Stack(
               children: [
-                VideoPlayerItem(videourl: data.videoId),
+                VideoPlayerItem(videourl: data.videourl),
                 Column(
                   children: [
                     const SizedBox(height: 100),
@@ -91,6 +91,7 @@ class Videoscreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Container(
+                
                               padding: const EdgeInsets.only(left: 20),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -169,7 +170,7 @@ class Videoscreen extends StatelessWidget {
                                 Column(
                                   children: [
                                     InkWell(
-                                      onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CommentScreen(id:data.videoId))),
+                                      onTap: ()=>Navigator.of(context).push(MaterialPageRoute(builder: (context)=>CommentScreen(videoid:data.videoId))),
                                       child: const Icon(
                                         Icons.comment,
                                         size: 40,

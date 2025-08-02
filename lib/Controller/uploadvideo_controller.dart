@@ -8,28 +8,30 @@ import 'package:tiktok_clonee/models/video.dart';
 import 'package:video_compress/video_compress.dart';
 
 class UploadvideoController extends GetxController {
-  // Upload video with song name, caption and video path
+  
   uploadvideo(String songName, String caption, String videopath) async {
     try {
-      // Get current user ID
+      // Get current user ID  and  user details from Firestore to pass in video
       String uid = firebaseauth.currentUser!.uid;
-      // Get user document from Firestore
       DocumentSnapshot userDoc = await firestore
           .collection('users')
           .doc(uid)
           .get();
 
-      // Get total number of videos to generate new video ID
+      // Get total number of videos documents to generate new video ID
       var allDocs = await firestore.collection('videos').get();
       int length = allDocs.docs.length;
-      // Upload video file to Firebase Storage and get URL
+
+      // Upload video file to  Storage  videos => videoid =>video and return url
       String videourl = await _uploadvideoToStorage("video $length", videopath);
-      // Upload thumbnail image and get URL
+
+      // Upload thumbnail image to storage  Thumbnails folder => videoid=> img   and return URL
       String thumbnail = await _uploadImagetoStorage(
         "video $length",
         videopath,
       );
-      // Create Video model object
+
+      // -----------------------Create Video model object and saves it to Firestore as video details details
       Video video = Video(
         username: (userDoc.data()! as Map<String, dynamic>)['name'],
         uid: uid,
@@ -40,23 +42,26 @@ class UploadvideoController extends GetxController {
         profilepic: (userDoc.data()! as Map<String, dynamic>)['profilepic'],
         sharecount: 0,
         songname: songName,
-        thumbnail: thumbnail, videourl: videourl,
+        thumbnail: thumbnail,
+        videourl: videourl,
       );
 
-      // Save video data to Firestore
-      await firestore.collection('videos').doc('video $length').set(video.tojson());
-      // Show success snackbar
-      Get.snackbar("Video Uploaded Sucessfully", "Your video is sucesfully uploaded");
+      // Save video data to Firestore   videos => videoID => video details
+      await firestore
+          .collection('videos')
+          .doc('video $length')
+          .set(video.tojson());
+      Get.snackbar(
+        "Video Uploaded Sucessfully",
+        "Your video is sucesfully uploaded",
+      );
       print("video is sucessfully uploaded");
-      // Go back to previous screen
-      Get.back(); 
+      Get.back();
     } catch (e) {
-      // Show error snackbar if upload fails
       Get.snackbar("error Uploading video", e.toString());
     }
   }
 
-  // Compress video file to reduce size
   _compressvideo(String videopath) async {
     final compressvideo = await VideoCompress.compressVideo(
       videopath,
@@ -66,24 +71,21 @@ class UploadvideoController extends GetxController {
     return compressvideo!.file;
   }
 
-  // Get thumbnail image from video file
   _getthumbnail(String videopath) async {
     final thumbnail = await VideoCompress.getFileThumbnail(videopath);
     return thumbnail;
   }
 
-  // Upload compressed video file to Firebase Storage and return download URL
-  Future<String> _uploadvideoToStorage(String id, String videopath) async {
-    Reference ref = firebaseStorage.ref().child('videos').child(id);
+  Future<String> _uploadvideoToStorage(String videoid, String videopath) async {
+    Reference ref = firebaseStorage.ref().child('videos').child(videoid);
     UploadTask task = ref.putFile(await _compressvideo(videopath));
     TaskSnapshot snapshot = await task;
     String downloadurl = await snapshot.ref.getDownloadURL();
     return downloadurl;
   }
 
-  // Upload thumbnail image to Firebase Storage and return download URL
-  Future<String> _uploadImagetoStorage(String id, String videopath) async {
-    Reference ref = firebaseStorage.ref().child('thumbnails').child(id);
+  Future<String> _uploadImagetoStorage(String videoid, String videopath) async {
+    Reference ref = firebaseStorage.ref().child('thumbnails').child(videoid);
     UploadTask task = ref.putFile((await _getthumbnail(videopath)));
     TaskSnapshot snapshot = await task;
     String downloadurl = await snapshot.ref.getDownloadURL();

@@ -102,8 +102,11 @@ class AuthController extends GetxController{
     if(pickedImage!=null){
       // Show snackbar on successful image selection
       Get.snackbar("Profile picture", "Your profile picture is Selected");
+    }else{
+            Get.snackbar("Profile picture error", "please upload a profile picture");
+
     }
-    // Update the reactive picked image variable
+    // Update threactivee  picked image variable
     _pickedimage=Rx<File?>(File(pickedImage!.path));
   }
 

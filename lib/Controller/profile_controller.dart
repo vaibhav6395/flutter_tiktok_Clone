@@ -3,38 +3,39 @@ import 'package:get/get.dart';
 import 'package:tiktok_clonee/constants.dart';
 
 class ProfileController extends GetxController {
-  // Reactive map to hold user data
   final Rx<Map<String, dynamic>> _user = Rx<Map<String, dynamic>>({});
-  // Getter to access user data
   Map<String, dynamic> get user => _user.value;
 
-  // Reactive string to hold user ID
-  Rx<String> _uid = ''.obs;
+  final Rx<String> _uid = ''.obs;
 
-  // Update the user ID and fetch user data
-  updateuserId(String uid) {
+  // Update the user ID and fetch user data through that id
+  void updateuserId(String uid) {
     _uid.value = uid;
     getuserData();
   }
 
-  // Fetch user data and related stats from Firestore
-  getuserData() async {
+
+  Future<void> getuserData() async {
     List<String> thumbnails = [];
-    // Get videos uploaded by the user
+
+  // Get videos uploaded by the user inside the whole collection wherever 'uid' value is defined of user id
     var myvideos = await firestore
         .collection('videos')
         .where('uid', isEqualTo: _uid.value)
         .get();
 
-    // Collect thumbnails from user's videos
+    // Collect thumbnails from list of  user's uploaded  videos and add into thumnail list
     for (var i = 0; i < myvideos.docs.length; i++) {
       thumbnails.add((myvideos.docs[i].data() as dynamic)['thumbnail']);
     }
+
     // Get user document from Firestore
     DocumentSnapshot userdoc = await firestore
         .collection('users')
         .doc(_uid.value)
         .get();
+
+        // here we do slf mapping 
     final userData = userdoc.data()! as dynamic;
     String name = userData['name'];
     String profilepic = userData['profilepic'];
@@ -43,10 +44,11 @@ class ProfileController extends GetxController {
     int following = 0;
     bool isfollowing = false;
 
-    // Calculate total likes from user's videos
+    // Calculate total likes from user's  uploaded  videos list
     for (var item in myvideos.docs) {
       likes += (item.data()['likes'] as List).length;
     }
+
     // Get follower and following counts
     var followerdoc = await firestore
         .collection('users')
@@ -89,11 +91,11 @@ class ProfileController extends GetxController {
   }
 
   // Follow or unfollow a user
-  followuser() async {
+  Future<void> followuser() async {
     var doc = await firestore
         .collection('users')
         .doc(_uid.value)
-        .collection('folloers  ')
+        .collection('followers')
         .doc(authcontroller.user.uid)
         .get();
 
@@ -102,36 +104,42 @@ class ProfileController extends GetxController {
       await firestore
           .collection('users')
           .doc(_uid.value)
-          .collection('folloers')
+          .collection('followrs')
           .doc(authcontroller.user.uid)
           .set({});
       await firestore
           .collection('users')
           .doc(authcontroller.user.uid)
-          .collection('folloers')
+          .collection('following')
           .doc(_uid.value)
           .set({});
       // Update follower count locally
-      _user.value.update("followers", (Value)=>(int.parse(Value)+1).toString());
-    } else{
+      _user.value.update(
+        "followers",
+        (Value) => (int.parse(Value) + 1).toString(),
+      );
+    } else {
       // If already following, remove follower and following documents
       await firestore
           .collection('users')
           .doc(_uid.value)
-          .collection('folloers')
+          .collection('following')
           .doc(authcontroller.user.uid)
-          .delete() ;
+          .delete();
       await firestore
           .collection('users')
           .doc(authcontroller.user.uid)
-          .collection('folloers')
+          .collection('following')
           .doc(_uid.value)
           .delete();
       // Update follower count locally
-      _user.value.update("followers", (Value)=>(int.parse(Value)-1).toString());
+      _user.value.update(
+        "followers",
+        (Value) => (int.parse(Value) - 1).toString(),
+      );
     }
     // Toggle the isfollowing status locally
-    _user.value.update("is following", (Value)=>! Value );
+    _user.value.update("is following", (Value) => !Value);
     update();
   }
 }

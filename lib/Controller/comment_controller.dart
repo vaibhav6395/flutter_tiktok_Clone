@@ -4,27 +4,27 @@ import 'package:tiktok_clonee/constants.dart';
 import 'package:tiktok_clonee/models/comment.dart';
 
 class CommentController extends GetxController {
-  // Reactive list to hold comments
+  // Reactive list to hold comments and their data 
   final Rx<List<Comment>> _comment = Rx<List<Comment>>([]);
 
-  // Getter to access the current list of comments
   List<Comment> get comments => _comment.value;
 
-  // Variable to store the current post ID for which comments are fetched
-  String _postid = "";
+  // variable stores the videoid to fetch comment details of that 
+  String _videoid = "";
 
-  // Update the post ID and fetch comments for that post
-  updatepostid(String id) {
-    _postid = id;
+  // Update the video on scroll and fetch comments for that post or video
+ void updatevideoid(String id) {
+    _videoid = id;
     getcomment();
   }
 
   // Fetch comments from Firestore for the current post ID and bind to the reactive list
+  // fetch data of  videos => videoid => details of comments of that video
   getcomment() async {
     _comment.bindStream(
       firestore
           .collection('videos')
-          .doc(_postid)
+          .doc(_videoid)
           .collection('comments')
           .snapshots()
           .map((QuerySnapshot query) {
@@ -49,12 +49,12 @@ class CommentController extends GetxController {
         // Get all existing comments to determine new comment ID
         var alldocs = await firestore
             .collection('videos')
-            .doc(_postid)
+            .doc(_videoid)
             .collection('comments')
             .get();
         int len = alldocs.docs.length;
 
-        // Create a new Comment object
+        // Create a new Comment object  and store it inside videos => videoid => comments doc
         Comment comment = Comment(
           username: (snapshot.data() as dynamic)['name'],
           comment: commentText.trim(),
@@ -67,16 +67,16 @@ class CommentController extends GetxController {
         // Save the comment to Firestore
         await firestore
             .collection('videos')
-            .doc(_postid)
+            .doc(_videoid)
             .collection('comments')
             .doc('comment $len')
             .set(comment.tojson());
         // Update the comment count for the video
         DocumentSnapshot snap = await firestore
             .collection('videos')
-            .doc(_postid)
+            .doc(_videoid)
             .get();
-        firestore.collection('videos').doc(_postid).update({
+        firestore.collection('videos').doc(_videoid).update({
           'commentcount': (snap.data()! as dynamic)['commentcount'] + 1,
         });
       }
@@ -86,18 +86,18 @@ class CommentController extends GetxController {
     }
   }
 
-  // Like or unlike a comment by updating the likes array in Firestore
-  likecomment(String id)async{
+  likecomment(String commentid)async{
+    // get current user details and inside videos => videoid => comments => commentid doc checks the userid 
     var uid=authcontroller.user.uid;
-    DocumentSnapshot doc=await firestore.collection('videos').doc(_postid).collection('comments').doc(id).get();
+    DocumentSnapshot doc=await firestore.collection('videos').doc(_videoid).collection('comments').doc(commentid).get();
     if((doc.data()! as dynamic)['likes'].contains(uid)){
       // If user already liked, remove like
-      await  firestore.collection('videos').doc(_postid).collection('comments').doc(id).update({
+      await  firestore.collection('videos').doc(_videoid).collection('comments').doc(commentid).update({
         'likes':FieldValue.arrayRemove([uid]),
       });
     }else{
       // If user has not liked, add like
-      await firestore.collection('videos').doc(_postid).collection('comments').doc(id).update({
+      await firestore.collection('videos').doc(_videoid).collection('comments').doc(commentid).update({
         'likes':FieldValue.arrayUnion([uid]),
       });
     }
