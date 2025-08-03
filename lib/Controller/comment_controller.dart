@@ -62,7 +62,7 @@ class CommentController extends GetxController {
           likes: [],
           id: 'comment $len',
           uid: authcontroller.user.uid,
-          profilepic: (snapshot.data() as dynamic)['profilepic'],
+          profilepic: (snapshot.data() as dynamic)['profile_pic'],
         );
         // Save the comment to Firestore
         await firestore

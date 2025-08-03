@@ -17,11 +17,15 @@ class Videocontroller extends GetxController {
         List<Video> retval = [];
         for (var element in query.docs) {
           retval.add(Video.fromsnap(element));
+          print("element is ${element.exists}");
+          print("username fetching ${retval[0].username}");
         }
         return retval;
       }),
     );
+    print("video length is ${videolist.length}");
   }
+  
 // this is a simple form of snapshot.data() as dynamic ['']  by mapping it 
 // instead we getting the data as a list of videomodel objects which is saved in a list searched user
 // so this works as  searcheduser[i].videoid   here videoid is a field in videomodel class

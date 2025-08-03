@@ -51,14 +51,15 @@ class Video {
     return Video(
       username: snapshot['username'],
       uid: snapshot['uid'],
-      videoId: snapshot['videooId'],
+      videoId: snapshot['videoId'],
       likes: snapshot['likes'],
       commentcount: snapshot['commentcount'],
       caption: snapshot['caption'],
       profilepic: snapshot['profilepic'],
       sharecount: snapshot['sharecount'],
       songname: snapshot['songname'],
-      thumbnail: snapshot['thumbnail'],      videourl: snapshot['videourl'],
+      thumbnail: snapshot['thumbnail'],      
+      videourl: snapshot['videourl'],
 
     );
   }

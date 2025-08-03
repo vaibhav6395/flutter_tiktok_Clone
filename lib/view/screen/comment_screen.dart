@@ -1,21 +1,32 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tiktok_clonee/Controller/comment_controller.dart';
 import 'package:tiktok_clonee/constants.dart';
 import 'package:timeago/timeago.dart' as tago;
 
-class CommentScreen extends StatelessWidget {
+class CommentScreen extends StatefulWidget {
   final String videoid;
-  CommentScreen({super.key, required this.videoid});
+  const CommentScreen({super.key, required this.videoid});
 
-  CommentController commentController = Get.put(CommentController());
+  @override
+  State<CommentScreen> createState() => _CommentScreenState();
+}
+
+class _CommentScreenState extends State<CommentScreen> {
+  late CommentController commentController;
   TextEditingController commenttextcontroller = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    commentController = Get.put(CommentController());
+    commentController.updatevideoid(widget.videoid);
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    commentController.updatevideoid(videoid);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -25,12 +36,11 @@ class CommentScreen extends StatelessWidget {
           child: Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                  itemCount: commentController.comments.length,
-                  itemBuilder: (context, index) {
-                    final comment = commentController.comments[index];
-
-                    return Obx(() {
+                child: Obx(() {
+                  return ListView.builder(
+                    itemCount: commentController.comments.length,
+                    itemBuilder: (context, index) {
+                      final comment = commentController.comments[index];
                       return ListTile(
                         leading: CircleAvatar(
                           backgroundColor: Colors.black,
@@ -59,7 +69,9 @@ class CommentScreen extends StatelessWidget {
                         subtitle: Row(
                           children: [
                             Text(
-                              tago.format(comment.datePublished.toDate()),
+                              tago.format(comment.datePublished is Timestamp 
+                                  ? (comment.datePublished as Timestamp).toDate() 
+                                  : comment.datePublished),
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.white,
@@ -78,7 +90,6 @@ class CommentScreen extends StatelessWidget {
                         trailing: InkWell(
                           onTap: () =>
                               commentController.likecomment(comment.id),
-
                           child: Icon(
                             Icons.favorite,
                             size: 25,
@@ -89,9 +100,9 @@ class CommentScreen extends StatelessWidget {
                           ),
                         ),
                       );
-                    });
-                  },
-                ),
+                    },
+                  );
+                }),
               ),
               const Divider(),
               ListTile(

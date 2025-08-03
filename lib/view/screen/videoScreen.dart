@@ -70,13 +70,20 @@ class Videoscreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Obx(() {
+    
+      body:Obx(() {
+        print(videocontroller.videolist.length);
         return PageView.builder(
           itemCount: videocontroller.videolist.length,
           controller: PageController(initialPage: 0, viewportFraction: 1),
           scrollDirection: Axis.vertical,
           itemBuilder: (context, index) {
             final data = videocontroller.videolist[index];
+            print(data.videoId); 
+
+
+            print(videocontroller.videolist.length);
+            Get.snackbar("video", data.profilepic);
 
             return Stack(
               children: [
@@ -122,7 +129,7 @@ class Videoscreen extends StatelessWidget {
                                         color: Colors.white,
                                       ),
                                       Text(
-                                        data.songname,
+                                        "${data.songname} songname",
                                         style: const TextStyle(
                                           fontSize: 15,
                                           color: Colors.white,
@@ -142,7 +149,7 @@ class Videoscreen extends StatelessWidget {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                builfprofile('string url'),
+                                builfprofile(data.profilepic),
                                 Column(
                                   children: [
                                     InkWell(

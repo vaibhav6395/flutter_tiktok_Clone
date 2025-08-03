@@ -13,19 +13,22 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final ProfileController profilecontroller = Get.put(ProfileController());
+  late ProfileController profilecontroller;
 
   @override
   void initState() {
     super.initState();
+    // Initialize the controller and update user ID
+    profilecontroller = Get.put(ProfileController());
     profilecontroller.updateuserId(widget.uid);
+    print(" profile uid ${widget.uid}");
   }
 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProfileController>(
-      init: ProfileController(),
       builder: (controller) {
+        print("User data in build: ${controller.user}");
         if (controller.user.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -99,14 +102,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Column(
                             children: [
                               Text(
-                                controller.user['following'],
+                                controller.user['followers'],
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               const SizedBox(height: 5),
-                              Text(
+                             Text(
                                 'Followers',
                                 style: const TextStyle(fontSize: 20),
                               ),
@@ -122,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Column(
                             children: [
                               Text(
-                                controller.user['like'],
+                                controller.user['likes'],
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -168,7 +171,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       shrinkWrap: true,
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,childAspectRatio: 1,crossAxisSpacing: 5),itemCount: controller.user['thumbnails'].length, itemBuilder: (context,index){
               String thumbnail=controller.user['thumbnails'][index];
-              return CachedNetworkImage(imageUrl: thumbnail,fit: BoxFit.cover,);
+             
+              return InkWell(onTap: (){},  // here you can also make a function to navigate to the video page at particular video id through controller
+                child: CachedNetworkImage(imageUrl: thumbnail,fit: BoxFit.cover,));
               
               
                       })
